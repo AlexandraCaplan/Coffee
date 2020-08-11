@@ -16,6 +16,19 @@ header {
   align-items: center;
 }
 
+#controls {
+  display: flex;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 2rem;
+  color: pink;
+}
+
+#votes{
+  display: flex;
+  justify-content: center;
+}
+
 body {
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
   background-color: floralwhite;

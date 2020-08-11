@@ -1,5 +1,12 @@
-let responses = [];
 const userResponsesSection = document.querySelector('#user-responses');
+const favoriteSelect = document.querySelector('#favorite');
+const orderSelect = document.querySelector('#order');
+
+const timHortonsVotesSpan = document.querySelector('#tim-hortons-votes');
+const StarbucksVotesSpan = document.querySelector('#starbucks-votes');
+const DunkinDonutsSpan = document.querySelector('#dunkin-donuts-votes');
+
+const userResponses = [];
 
 const fetchUserResponses = async () => {
   const response = await fetch(
@@ -50,3 +57,53 @@ const fetchAndShowResponses = async () => {
 };
 
 fetchAndShowResponses();
+
+function responseFilter(userResponse) {
+  const favorite =
+    userResponse["What's your favorite of these coffee brands? "];
+  const order = userResponse['How do you like to order your coffee?'];
+
+  const selectedFavorite = favoriteSelect.value;
+  const selectedOrder = orderSelect.value;
+
+  return (
+    (selectedFavorite === 'All' || favorite === selectedFavorite) &&
+    (selectedOrder === 'All' || order === selectedOrder)
+  );
+}
+
+function handleFilterInput() {
+  const filteredResults = userResponses.filter(responseFilter);
+  main.innerHTML = userResponses.map(renderUserResponse).join('');
+}
+
+favoriteSelect.addEventListener('input', handleFilterInput);
+orderSelect.addEventListener('input', handleFilterInput);
+const question = "What's your favorite of these coffee brands?"
+
+const votes = {
+  "Tim Hortons": 0,
+  "Starbucks": 0,
+  "Dunkin Donuts": 0
+}
+responses.forEach(response => {
+  votes[response[question]]= 1
+})
+
+timHortonsVotesSpan.textContent = votes ['Tim Hortons']
+StarbucksVotesSpan.textContent = votes ['Starbucks]
+DunkinDonutsSpan.textContent = votes ['Dunkin Donuts']
+
+
+new Chart('pie-chart', {
+  type: 'pie',
+  data: {
+    datasets: [
+      {
+        data: Object.values(votes),
+        backgroundColor: ['blue', 'red', 'purple'],
+      },
+    ],
+    labels: Object.keys(votes),
+  },
+});
