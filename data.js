@@ -1,12 +1,8 @@
+let responses = [];
+
 const userResponsesSection = document.querySelector('#user-responses');
 const favoriteSelect = document.querySelector('#favorite');
 const orderSelect = document.querySelector('#order');
-
-const timHortonsVotesSpan = document.querySelector('#tim-hortons-votes');
-const starbucksVotesSpan = document.querySelector('#starbucks-votes');
-const dunkinDonutsSpan = document.querySelector('#dunkin-donuts-votes');
-
-let userResponses = [];
 
 const fetchUserResponses = async () => {
   const response = await fetch(
@@ -14,48 +10,10 @@ const fetchUserResponses = async () => {
   );
   const data = await response.text();
   const results = Papa.parse(data, { header: true });
-  userResponses = results.data;
+  responses = results.data;
 };
 
-const fetchandShowResponses = async () => {
-  await fetchUserResponses();
-  const eachUserResponseHTML = userResponses.map(renderUserResponse);
-  const allUserResponsesHTML = eachUserResponseHTML.join('');
-  userResponsesSection.innerHTML = allUserResponsesHTML;
-};
-
-fetchandShowResponses();
-
-const votes = {
-  "Tim Horton's": 0,
-  Starbucks: 0,
-  'Coffee Bean and Tea Leaf': 0,
-  Caribou: 0,
-  'Dunkin Donuts': 0,
-};
-
-function renderUserResponse(userResponse) {
-  const key = userResponse["What's your favorite of these coffee brands? "];
-
-  votes[key] += 1;
-
-  timHortonsVotesSpan.textContent = votes["Tim Horton's"];
-  starbucksVotesSpan.textContent = votes.Starbucks;
-  dunkinDonutsSpan.textContent = votes['Dunkin Donuts'];
-
-  new Chart('pie-chart', {
-    type: 'pie',
-    data: {
-      datasets: [
-        {
-          data: Object.values(votes),
-          backgroundColor: ['blue', 'red', 'purple'],
-        },
-      ],
-      labels: Object.keys(votes),
-    },
-  });
-
+const renderUserResponse = userResponse => {
   const name = userResponse["What's your name?"];
   const favoriteCoffee =
     userResponse["What's your favorite of these coffee brands? "];
@@ -84,7 +42,47 @@ function renderUserResponse(userResponse) {
   <h5> Which digital offers have you received lately? <br> <img src = ${photoURL} alt = "Picture of digital offer"> </h5>
   </div>
   `;
-}
+};
+
+const makeChart = () => {
+  console.log('One chart, coming right up...', responses);
+  const favoritesTally = {
+    Starbucks: 0,
+    "Tim Horton's": 0,
+    'Dunkin Donuts': 0,
+    Caribou: 0,
+    'Coffee Bean and Tea Leaf': 0,
+  };
+  responses.forEach(response => {
+    const oneUserFavoriteCoffee =
+      response["What's your favorite of these coffee brands? "];
+    favoritesTally[oneUserFavoriteCoffee] += 1;
+  });
+  /* eslint-disable no-new */
+  new Chart('pie-chart', {
+    type: 'pie',
+    data: {
+      datasets: [
+        {
+          data: Object.values(favoritesTally),
+          backgroundColor: ['red', 'white'],
+        },
+      ],
+      // These labels appear in the legend and in the tooltips when hovering different arcs
+      labels: Object.keys(favoritesTally),
+    },
+  });
+};
+
+const fetchandShowResponses = async () => {
+  await fetchUserResponses();
+  const eachUserResponseHTML = responses.map(renderUserResponse);
+  const allUserResponsesHTML = eachUserResponseHTML.join('');
+  userResponsesSection.innerHTML = allUserResponsesHTML;
+  makeChart();
+};
+
+fetchandShowResponses();
 
 function responseFilter(userResponse) {
   const favorite =
@@ -95,14 +93,14 @@ function responseFilter(userResponse) {
   const selectedOrder = orderSelect.value;
 
   return (
-    (selectedFavorite === 'All' || favorite === selectedFavorite) &&
-    (selectedOrder === 'All' || order === selectedOrder)
+    (selectedOrder === 'All' || order.includes(selectedOrder)) &&
+    (selectedFavorite === 'All' || favorite.includes(selectedFavorite))
   );
 }
 
 function handleFilterInput() {
-  const filteredResults = userResponse.filter(responseFilter);
-  main.innerHTML = userResponse.map().join('');
+  const filteredResults = responses.filter(responseFilter);
+  userResponsesSection.innerHTML = responses.map().join('');
 }
 
 favoriteSelect.addEventListener('input', handleFilterInput);

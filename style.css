@@ -98,3 +98,8 @@ h5 {
   height: 300px;
   object-fit: cover;
 }
+
+#pie-chart{
+  height: 200px
+  width: 200px
+}

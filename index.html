@@ -9,56 +9,36 @@
   <body>
     <header>
       <h1>
-        Coffee Preferences Project 
+        Coffee Preferences Project
         <span aria-label="coffee-cup"> ☕️ </span>
       </h1>
     </header>
     <div>
-      <section id ="controls">
-  <for="favorite">Favorite Coffee Chain:</label>
-<select id="favorite">
-  <option> Starbucks </option>
-  <option> Tim Horton's </option>
-  <option> Dunkin Donuts </option>
-  <option>Caribou</option>
-  <option>Caribou</option>
-  <option>Coffee Bean and Tea Leaf</option>
-</select>  
-<label 
-for="order">I like to order my coffee:</label>
-<select id="order">
-  <option>Drive Thru</option>
-  <option>Mobile</option>
-  <option>In Store</option>
-</select>  
-    </div>
-      <div id = votes>
-      <h1>Votes for favorite chain</h1>
-      <br>
-      <table>
-        <thead>
-          <tr>
-            <th>Tim Horton's</th>
-            <th>Starbucks</th>
-            <th>Dunkin Donuts</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td id="tim-hortons-votes">?</td>
-            <td id="starbucks-votes">?</td>
-            <td id="dunkin-donuts-votes">?</td>
-          </tr>
-        </tbody>
-      </table>
+      <section id="controls">
+        <label for="favorite">Favorite Coffee Chain:</label>
+        <select id="favorite">
+          <option> Starbucks </option>
+          <option> Tim Horton's </option>
+          <option> Dunkin Donuts </option>
+          <option>Caribou</option>
+          <option>Coffee Bean and Tea Leaf</option>
+        </select>
+        <label for="order">I like to order my coffee:</label>
+        <select id="order">
+          <option>Drive Thru</option>
+          <option>Mobile</option>
+          <option>In Store</option>
+        </select>
+      </section>
     </div>
     <main>
-      <section id="user-responses"><h2>Brewing...</h2>
-        <canvas id ="pie-chart" width="400" height="400"> </canvas>
+      <section id="user-responses">
+        <h2>Brewing...</h2>
+      </section>
+      <canvas id="pie-chart" width="100" height="200"> </canvas>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.min.js"></script>"
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.2.0/papaparse.min.js"></script>
     <script src="data.js"></script>
-  </section>
   </body>
 </html>
