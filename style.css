@@ -48,7 +48,11 @@ body {
   min-height: 800px;
   min-width: 300px;
 }
-
+th {
+  color: pink;
+  align-items: center;
+  padding: 10px;
+}
 main {
   display: flex;
   align-items: center;

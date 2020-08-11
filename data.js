@@ -3,10 +3,10 @@ const favoriteSelect = document.querySelector('#favorite');
 const orderSelect = document.querySelector('#order');
 
 const timHortonsVotesSpan = document.querySelector('#tim-hortons-votes');
-const StarbucksVotesSpan = document.querySelector('#starbucks-votes');
-const DunkinDonutsSpan = document.querySelector('#dunkin-donuts-votes');
+const starbucksVotesSpan = document.querySelector('#starbucks-votes');
+const dunkinDonutsSpan = document.querySelector('#dunkin-donuts-votes');
 
-const userResponses = [];
+let userResponses = [];
 
 const fetchUserResponses = async () => {
   const response = await fetch(
@@ -14,11 +14,48 @@ const fetchUserResponses = async () => {
   );
   const data = await response.text();
   const results = Papa.parse(data, { header: true });
-  responses = results.data;
-  console.log(responses);
+  userResponses = results.data;
 };
 
-const renderUserResponse = userResponse => {
+const fetchandShowResponses = async () => {
+  await fetchUserResponses();
+  const eachUserResponseHTML = userResponses.map(renderUserResponse);
+  const allUserResponsesHTML = eachUserResponseHTML.join('');
+  userResponsesSection.innerHTML = allUserResponsesHTML;
+};
+
+fetchandShowResponses();
+
+const votes = {
+  "Tim Horton's": 0,
+  Starbucks: 0,
+  'Coffee Bean and Tea Leaf': 0,
+  Caribou: 0,
+  'Dunkin Donuts': 0,
+};
+
+function renderUserResponse(userResponse) {
+  const key = userResponse["What's your favorite of these coffee brands? "];
+
+  votes[key] += 1;
+
+  timHortonsVotesSpan.textContent = votes["Tim Horton's"];
+  starbucksVotesSpan.textContent = votes.Starbucks;
+  dunkinDonutsSpan.textContent = votes['Dunkin Donuts'];
+
+  new Chart('pie-chart', {
+    type: 'pie',
+    data: {
+      datasets: [
+        {
+          data: Object.values(votes),
+          backgroundColor: ['blue', 'red', 'purple'],
+        },
+      ],
+      labels: Object.keys(votes),
+    },
+  });
+
   const name = userResponse["What's your name?"];
   const favoriteCoffee =
     userResponse["What's your favorite of these coffee brands? "];
@@ -38,25 +75,16 @@ const renderUserResponse = userResponse => {
     `https://drive.google.com/thumbnail?id=${googlePhotoID}` || defaultIMG;
 
   return `
-    <div class = "user-response">
-   <h2>My name is: <br><em>${name}</em><h2>
-   <h3>Of the major players in the US, my favorite US coffee chain is: <br><em> ${favoriteCoffee} </em> </h3>
-   <h3>Why do I love this brand? <br> <em>${whyLove}</em></h3>
-   <h4>I like to order my coffee:<br> <em>${orderCoffee}</em></h4>
-   <h5> Since Covid 19, on a scale of 1-5 (5 the highest), how much have your coffee habits changed? <br> <em> ${coffeeHabits} </em></h5>
-   <h5> Which digital offers have you received lately? <br> <img src = ${photoURL} alt = "Picture of digital offer"> </h5>
-   </div>
+  <div class = "user-response">
+  <h2>My name is: <br><em>${name}</em><h2>
+  <h3>Of the major players in the US, my favorite US coffee chain is: <br><em> ${favoriteCoffee} </em> </h3>
+  <h3>Why do I love this brand? <br> <em>${whyLove}</em></h3>
+  <h4>I like to order my coffee:<br> <em>${orderCoffee}</em></h4>
+  <h5> Since Covid 19, on a scale of 1-5 (5 the highest), how much have your coffee habits changed? <br> <em> ${coffeeHabits} </em></h5>
+  <h5> Which digital offers have you received lately? <br> <img src = ${photoURL} alt = "Picture of digital offer"> </h5>
+  </div>
   `;
-};
-
-const fetchAndShowResponses = async () => {
-  await fetchUserResponses();
-  const eachUserResponseHTML = responses.map(renderUserResponse);
-  const allUserResponsesHTML = eachUserResponseHTML.join('');
-  userResponsesSection.innerHTML = allUserResponsesHTML;
-};
-
-fetchAndShowResponses();
+}
 
 function responseFilter(userResponse) {
   const favorite =
@@ -73,37 +101,9 @@ function responseFilter(userResponse) {
 }
 
 function handleFilterInput() {
-  const filteredResults = userResponses.filter(responseFilter);
-  main.innerHTML = userResponses.map(renderUserResponse).join('');
+  const filteredResults = userResponse.filter(responseFilter);
+  main.innerHTML = userResponse.map().join('');
 }
 
 favoriteSelect.addEventListener('input', handleFilterInput);
 orderSelect.addEventListener('input', handleFilterInput);
-const question = "What's your favorite of these coffee brands?"
-
-const votes = {
-  "Tim Hortons": 0,
-  "Starbucks": 0,
-  "Dunkin Donuts": 0
-}
-responses.forEach(response => {
-  votes[response[question]]= 1
-})
-
-timHortonsVotesSpan.textContent = votes ['Tim Hortons']
-StarbucksVotesSpan.textContent = votes ['Starbucks]
-DunkinDonutsSpan.textContent = votes ['Dunkin Donuts']
-
-
-new Chart('pie-chart', {
-  type: 'pie',
-  data: {
-    datasets: [
-      {
-        data: Object.values(votes),
-        backgroundColor: ['blue', 'red', 'purple'],
-      },
-    ],
-    labels: Object.keys(votes),
-  },
-});
